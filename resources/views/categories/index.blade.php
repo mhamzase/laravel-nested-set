@@ -22,53 +22,56 @@
 
 <body>
 
-    <div class="container my-5 col-3">
+    <div class="container my-5 col-6">
         <form method="post" action="{{ route('categories.store') }}">
             @csrf
-
-            @if ($errors->any())
-                <div class="alert alert-danger">
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
-
-            <div class="mb-3">
-                <label for="name" class="form-label">Category name</label>
-                <input type="text" class="form-control" id="name" name="name">
-            </div>
-            <div class="mb-3">
-                <label for="name" class="form-label">Parent category</label>
-                <select name="parent_id" id="parent_id" class="form-control">
-                    <option value="0">No parent</option>
-                    @foreach ($categories as $category)
-                        <option value="{{ $category->id }}">{{ $category->name }}</option>
+            <div class="row mb-4">
+                @if ($errors->any())
+                    @foreach ($errors->all() as $error)
+                        <p class="text-danger">{{ $error }}</p>
                     @endforeach
-                </select>
+                @endif
+
+                <div class="col-5">
+                    <label for="name" class="form-label">Category name</label>
+                    <input type="text" class="form-control" id="name" name="name">
+                </div>
+                <div class="col-5">
+                    <label for="name" class="form-label">Select parent category</label>
+                    <select name="parent_id" id="parent_id" class="form-control">
+                        <option value="0">No parent</option>
+                        @foreach ($categories as $category)
+                            <option value="{{ $category->id }}">{{ $category->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-2 position-relative">
+                    <button type="submit" class="btn btn-primary position-absolute bottom-0">Submit</button>
+                </div>
             </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
         </form>
 
-
+        <h5 class="display-4 my-4">Categories</h5>
         <table class="table table-striped mt-4">
             <thead>
                 <tr>
                     <th>#</th>
                     <th>Parent</th>
-                    <th>Name</th>
+                    <th>Child</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach ($categories as $category)
                     <tr>
                         <td>{{ $category->id }}</td>
-                        <td>{{ $category->ancestors->count() ? implode(' > ', $category->ancestors->pluck('name')->toArray()) : 'Top Level'}}</td>
+                        <td>{{ $category->ancestors->count() ? implode(' > ', $category->ancestors->pluck('name')->toArray()) : 'Top Level' }}
+                        </td>
                         <td>{{ $category->name }}</td>
                     </tr>
                 @endforeach
+            </tbody>
+        </table>
+        {{-- {!! '<span class="badge text-bg-dark">Top Level</span>' !!} --}}
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
