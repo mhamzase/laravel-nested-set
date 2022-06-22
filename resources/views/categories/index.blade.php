@@ -17,15 +17,36 @@
             padding: 0;
             font-family: 'Nunito', sans-serif;
         }
+
+     
+
+        @media print {
+            .form-area, .print-btn, .heading-category{
+                display:none;
+            }
+            .printTable {
+                border:1px solid black;
+                background-color: white;
+                /* height: 100%; */
+                width: 98%;
+                position: fixed;
+                top: 0;
+                left: 0;
+                margin: 10px;
+                /* padding: 15px; */
+                font-size: 14px;
+                /* line-height: 18px; */
+            }
+        }
     </style>
 </head>
 
 <body>
-
+    <div class="bg"></div>
     <div class="container my-5 col-6">
         <form method="post" action="{{ route('categories.store') }}">
             @csrf
-            <div class="row mb-4">
+            <div class="form-area row mb-4">
                 @if ($errors->any())
                     @foreach ($errors->all() as $error)
                         <p class="text-danger">{{ $error }}</p>
@@ -46,13 +67,13 @@
                     </select>
                 </div>
                 <div class="col-2 position-relative">
-                    <button type="submit" class="btn btn-primary position-absolute bottom-0">Submit</button>
+                    <button type="submit" class="btn btn-dark position-absolute bottom-0">Submit</button>
                 </div>
             </div>
         </form>
 
-        <h5 class="display-4 my-4">Categories</h5>
-        <table class="table table-striped mt-4">
+        <h5 class="display-4 my-4 heading-category">Categories</h5>
+        <table class="printTable table table-striped mt-4">
             <thead>
                 <tr>
                     <th>#</th>
@@ -64,7 +85,7 @@
                 @foreach ($categories as $category)
                     <tr>
                         <td>{{ $category->id }}</td>
-                        <td>{{ $category->ancestors->count() ? implode(' > ', $category->ancestors->pluck('name')->toArray()) : 'Top Level' }}
+                        <td>{{ $category->ancestors->count() ? implode(' > ', $category->ancestors->pluck('name')->toArray()) : 'No parent' }}
                         </td>
                         <td>{{ $category->name }}</td>
                     </tr>
@@ -72,12 +93,20 @@
             </tbody>
         </table>
         {{-- {!! '<span class="badge text-bg-dark">Top Level</span>' !!} --}}
+        <div class="text-end">
+            <button class="btn btn-dark print-btn">Print Table</button>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous">
     </script>
 
+    <script>
+        document.querySelector('.print-btn').addEventListener('click', function () {
+            window.print();
+        });
+    </script>
 </body>
 
 </html>
